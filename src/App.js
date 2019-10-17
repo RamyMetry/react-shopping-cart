@@ -6,6 +6,7 @@ import data from './data';
 import Navigation from './components/Navigation';
 import Products from './components/Products';
 import ShoppingCart from './components/ShoppingCart';
+import {ProductContext} from "../src/contexts/ProductContext"
 
 function App() {
 	const [products] = useState(data);
@@ -13,10 +14,18 @@ function App() {
 
 	const addItem = item => {
 		// add the given item to the cart
+		setCart([...cart,item])
 	};
 
+	const removeItem = id => {
+		const deleteCartItem = cart.filter(item => item.id !== id);
+		setCart([...deleteCartItem]);
+   };
+	
+
 	return (
-		<div className="App">
+		<ProductContext.Provider value={{products , addItem , cart , removeItem}}>
+			<div className="App">
 			<Navigation cart={cart} />
 
 			{/* Routes */}
@@ -33,9 +42,11 @@ function App() {
 
 			<Route
 				path="/cart"
-				render={() => <ShoppingCart cart={cart} />}
+				render={() => <ShoppingCart cart={cart} removeItem={removeItem} />}
 			/>
 		</div>
+		</ProductContext.Provider>
+		
 	);
 }
 
